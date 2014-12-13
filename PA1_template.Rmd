@@ -6,6 +6,9 @@ output:
 ---
 
 
+#### Start of assignment
+
+
 ## Loading and preprocessing the data
 
 Set the working directory to the cloned GitHub repo 'RepData_PeerAssessment1'
@@ -93,6 +96,11 @@ names(my_avg) <- c("Interval", "Avg_Steps")
 ```
 
 
+It is noted that the 'interval' is not a continuous series. For example, after '55', instead of '60' at 60 minutes, '100' is recorded (to represent 01:00). 
+
+Approach: Convert the '5-minute intervals' to a linear scale (0 to 287) to represent 288 x '5-minute intervals' in 24-hours, and then overlay the x-axis with customised time labels
+
+
 Make a time series plot of the 5-minute interval (x-axis) and the average no. of steps taken, averaged across all days (y-axis)
 
 
@@ -103,8 +111,8 @@ names(my_df) <- c("Interval", "Avg_Steps", "My_Interval")
 
 with(my_df, plot(My_Interval, Avg_Steps, type = "l", xaxt = "n", col = "brown", main = "Time series plot", xlab = "5-minute Interval", ylab = "Average no. of steps taken, across all days"))
 
-my_xlab <- c("00:00", "04:00", "08:00", "12:00", "16:00", "20:00")
-axis(1, at=c(0, 48, 96, 144, 192, 240), labels = my_xlab)
+my_xlab <- c("00:00", "04:00", "08:00", "12:00", "16:00", "20:00", "24:00")
+axis(1, at=c(0, 48, 96, 144, 192, 240, 288), labels = my_xlab)
 ```
 
 
@@ -221,13 +229,23 @@ library(lattice)
 ```
 
 
+Approach: Similar to previous 'time series plot', convert the '5-minute intervals' to a linear scale (0 to 287) to represent 288 x '5-minute intervals' in 24-hours, and then overlay the x-axis with customised time labels
+
+
 Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average no. of steps taken, averaged across all weekday days or weekend days (y-axis)
 
 
 ```{r}
-xyplot(Avg_Steps ~ Interval | Day_Type, data = new_avg, layout = c(1, 2), type = "l", main = "Time series plot", xlab = "Interval", ylab = "Number of steps")
+my_interval2 <- rep(c(0:287))
+my_df2 <- cbind(new_avg, my_interval2)
+names(my_df2) <- c("Day_Type", "Interval", "Avg_Steps", "My_Interval")
+
+x_at <- c(0, 48, 96, 144, 192, 240, 288)
+my_xlab <- c("00:00", "04:00", "08:00", "12:00", "16:00", "20:00", "24:00")
+
+xyplot(Avg_Steps ~ My_Interval | Day_Type, data = my_df2, layout = c(1, 2), type = "l", main = "Time series panel plot", xlab = "Interval", ylab = "Number of steps", scales = list(x = list(at = x_at, labels = my_xlab)))
 ```
 
 
 
-##### End of assignment
+#### End of assignment
